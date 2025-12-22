@@ -49,4 +49,10 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 # --------------------------
 # Optionnel : démarrage Apache en mode foreground
 # --------------------------
-CMD ["apache2-foreground"]
+# --------------------------
+# Entrypoint: clean MPM conflicts and start Apache
+# --------------------------
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
