@@ -19,11 +19,15 @@ RUN set -eux \
 # Corriger conflit MPM et activer rewrite
 # --------------------------
 # Désactive les MPM incompatibles
-RUN a2dismod mpm_event mpm_worker || true
-# Active MPM prefork
-RUN a2enmod mpm_prefork
-# Active mod_rewrite
-RUN a2enmod rewrite
+RUN set -eux \
+	&& a2dismod mpm_event mpm_worker || true \
+	# remove any left-over symlinks that might still load another MPM
+	&& rm -f /etc/apache2/mods-enabled/mpm_event.load /etc/apache2/mods-enabled/mpm_event.conf \
+			  /etc/apache2/mods-enabled/mpm_worker.load /etc/apache2/mods-enabled/mpm_worker.conf || true \
+	# ensure only prefork is enabled
+	&& a2enmod mpm_prefork || true \
+	# enable rewrite
+	&& a2enmod rewrite
 
 # --------------------------
 # Copier le projet dans Apache
