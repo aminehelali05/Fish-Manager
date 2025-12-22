@@ -1,8 +1,10 @@
 -- Database dump for Fish Manager
 -- Use: import into MySQL (Render MySQL service)
 
-CREATE DATABASE IF NOT EXISTS `fish_manager` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `fish_manager`;
+-- NOTE: Railway provides a database named `railway` by default. Use it so the import matches your
+-- runtime DB_NAME (no code change required).
+CREATE DATABASE IF NOT EXISTS `railway` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `railway`;
 
 -- --------------------------------------------------------
 -- Table `users` (for login)
