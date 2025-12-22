@@ -1,0 +1,7 @@
+# Ignore environment files and editor/OS artifacts
+.env
+.vscode/
+Thumbs.db
+desktop.ini
+node_modules/
+*.log

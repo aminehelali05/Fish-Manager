@@ -1,0 +1,137 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #020b1c, #061a33);
+  color: #eafcff;
+  padding-bottom: 80px;
+}
+
+/* ===== HEADER ===== */
+header {
+  text-align: center;
+  padding: 25px;
+  font-size: 32px;
+  font-weight: bold;
+  color: #00f7ff;
+  text-shadow: 0 0 15px #00f7ff;
+}
+
+/* ===== DASHBOARD ===== */
+.cards {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 30px auto;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: rgba(0, 255, 255, 0.08);
+  border: 1px solid #00f7ff;
+  padding: 25px;
+  min-width: 180px;
+  text-align: center;
+  border-radius: 12px;
+  box-shadow: 0 0 15px #00f7ff44;
+  font-size: 18px;
+}
+
+/* ===== SECTIONS ===== */
+.form-section,
+.table-section {
+  width: 90%;
+  margin: 40px auto;
+  padding: 25px;
+  border-radius: 15px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid #00f7ff55;
+  box-shadow: 0 0 20px #00f7ff33;
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #00f7ff;
+  text-shadow: 0 0 10px #00f7ff;
+}
+
+/* ===== FORMS ===== */
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+input, select {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  min-width: 220px;
+}
+
+button {
+  background: linear-gradient(45deg, #00f7ff, #0099ff);
+  color: #002;
+  font-weight: bold;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 0 15px #00f7ff;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+/* ===== TABLE ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #00f7ff44;
+  text-align: center;
+}
+
+th {
+  color: #00f7ff;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-block;
+  margin: 20px;
+  padding: 12px 20px;
+  background: #00f7ff;
+  color: #002;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.logout {
+  background: crimson;
+  color: white;
+}
+
+/* ===== MULTI FISH LINE ===== */
+.line {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.info {
+  margin-top: 10px;
+  color: #9ff;
+}
