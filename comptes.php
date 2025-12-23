@@ -2,11 +2,12 @@
 session_start();
 include "db.php";
 
-/* حماية الصفحة */
-if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
-    header("Location: index.php");
-    exit;
+/* Page access: require login; show friendly message if not admin */
+if (!isset($_SESSION['username'])){
+  header("Location: login.php");
+  exit;
 }
+$not_admin = (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin');
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -28,49 +29,57 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
 <a class="btn" href="index.php">⬅ Retour</a>
 
 <!-- ================= TABLE COMPTES ================= -->
-<section class="table-section">
-<table>
-<tr>
-  <th>Client</th>
-  <th>Total Vente (DT)</th>
-  <th>Total Payé (DT)</th>
-  <th>Reste (DT)</th>
-</tr>
+<?php if($not_admin): ?>
+  <section class="panel">
+    <h2>Accès refusé</h2>
+    <p>Vous devez être administrateur pour voir la page des comptes.</p>
+    <p><a class="btn" href="index.php">Retour</a></p>
+  </section>
+<?php else: ?>
+  <section class="table-section">
+  <table>
+  <tr>
+    <th>Client</th>
+    <th>Total Vente (DT)</th>
+    <th>Total Payé (DT)</th>
+    <th>Reste (DT)</th>
+  </tr>
 
-<?php
-$sql = "
-SELECT 
-  c.id,
-  c.nom,
-  c.prenom,
-  COALESCE(SUM(cmd.total),0) AS total_vente,
-  COALESCE(SUM(cmd.montant_paye),0) AS total_paye,
-  COALESCE(SUM(cmd.total - cmd.montant_paye),0) AS reste
-FROM clients c
-LEFT JOIN commandes cmd ON cmd.id_client = c.id
-GROUP BY c.id
-ORDER BY c.nom
-";
+  <?php
+  $sql = "
+  SELECT 
+      c.id,
+      c.nom,
+      c.prenom,
+      COALESCE(SUM(cmd.total),0) AS total_vente,
+      COALESCE(SUM(cmd.montant_paye),0) AS total_paye,
+      COALESCE(SUM(cmd.total - cmd.montant_paye),0) AS reste
+  FROM clients c
+  LEFT JOIN commandes cmd ON cmd.id_client = c.id
+  GROUP BY c.id
+  ORDER BY c.nom
+  ";
 
-$res = mysqli_query($conn, $sql);
+  $res = mysqli_query($conn, $sql);
 
-if (!$res) {
-    echo "<tr><td colspan='4'>Erreur SQL</td></tr>";
-} else {
-    while ($row = mysqli_fetch_assoc($res)) {
-        $cid = (int)$row['id'];
-        echo "
-        <tr>
-          <td>".htmlspecialchars($row['nom'])." ".htmlspecialchars($row['prenom'])."</td>
-          <td>".number_format((float)$row['total_vente'],2)."</td>
-          <td>".number_format((float)$row['total_paye'],2)."</td>
-          <td>".number_format((float)$row['reste'],2)."</td>
-        </tr>";
-    }
-}
-?>
-</table>
-</section>
+  if (!$res) {
+      echo "<tr><td colspan='4'>Erreur SQL</td></tr>";
+  } else {
+      while ($row = mysqli_fetch_assoc($res)) {
+          $cid = (int)$row['id'];
+          echo "
+          <tr>
+            <td>".htmlspecialchars($row['nom'])." ".htmlspecialchars($row['prenom'])."</td>
+            <td>".number_format((float)$row['total_vente'],2)."</td>
+            <td>".number_format((float)$row['total_paye'],2)."</td>
+            <td>".number_format((float)$row['reste'],2)."</td>
+          </tr>";
+      }
+  }
+  ?>
+  </table>
+  </section>
+<?php endif; ?>
 
 <!-- ================= STATS ================= -->
 <section class="table-section">
