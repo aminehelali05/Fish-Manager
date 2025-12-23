@@ -114,4 +114,7 @@ foreach ($stats as $label => $cond) {
 </section>
 
 </body>
+  <!-- Inline minimal fallback to trigger page-load animation quickly -->
+  <script>setTimeout(function(){ try{ document.body.classList.add('is-loaded'); }catch(e){} },40);</script>
+  <script src="js_main.js"></script>
 </html>
