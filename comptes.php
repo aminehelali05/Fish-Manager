@@ -40,13 +40,14 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
 <?php
 $sql = "
 SELECT 
-    c.nom,
-    c.prenom,
-    COALESCE(SUM(o.prix_total),0) AS total_vente,
-    COALESCE(SUM(o.montant_paye),0) AS total_paye,
-    COALESCE(SUM(o.prix_total - o.montant_paye),0) AS reste
+  c.id,
+  c.nom,
+  c.prenom,
+  COALESCE(SUM(cmd.total),0) AS total_vente,
+  COALESCE(SUM(cmd.montant_paye),0) AS total_paye,
+  COALESCE(SUM(cmd.total - cmd.montant_paye),0) AS reste
 FROM clients c
-LEFT JOIN orders o ON o.id_client = c.id
+LEFT JOIN commandes cmd ON cmd.id_client = c.id
 GROUP BY c.id
 ORDER BY c.nom
 ";
@@ -57,12 +58,13 @@ if (!$res) {
     echo "<tr><td colspan='4'>Erreur SQL</td></tr>";
 } else {
     while ($row = mysqli_fetch_assoc($res)) {
+        $cid = (int)$row['id'];
         echo "
         <tr>
-          <td>{$row['nom']} {$row['prenom']}</td>
-          <td>{$row['total_vente']}</td>
-          <td>{$row['total_paye']}</td>
-          <td>{$row['reste']}</td>
+          <td>".htmlspecialchars($row['nom'])." ".htmlspecialchars($row['prenom'])."</td>
+          <td>".number_format((float)$row['total_vente'],2)."</td>
+          <td>".number_format((float)$row['total_paye'],2)."</td>
+          <td>".number_format((float)$row['reste'],2)."</td>
         </tr>";
     }
 }
