@@ -100,7 +100,7 @@ while($client = mysqli_fetch_assoc($cl)){
       echo '<td>'.htmlspecialchars($ff['nom_fish']).'</td>';
       echo '<td>'.number_format($ff['quantite_kg'],2).'</td>';
       echo '<td>'.number_format($ff['prix_vente'],2).' €</td>';
-      echo "<td><a href='delete_fish.php?id={$fid}' title='Supprimer'>🗑️</a></td>";
+      echo "<td><a href='edit_fish.php?id={$fid}' title='Modifier'>✏️</a> <a href='delete_fish.php?id={$fid}' title='Supprimer'>🗑️</a></td>";
       echo '</tr>';
     }
     echo '</table>';
