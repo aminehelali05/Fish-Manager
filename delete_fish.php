@@ -13,11 +13,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $r = mysqli_query($conn, "SELECT COUNT(*) n FROM commande_items WHERE id_fish=$id");
     $c = mysqli_fetch_assoc($r);
     if($c && intval($c['n']) > 0){
-        echo "<p>Impossible de supprimer: ce poisson est lié à des commandes.</p><p><a href='index.php'>Retour</a></p>";
-        exit;
+      $_SESSION['flash_error'] = 'Impossible de supprimer: ce poisson est lié à des commandes.';
+      header('Location: index.php');
+      exit;
     }
 
     mysqli_query($conn, "DELETE FROM fish WHERE id=$id");
+    $_SESSION['flash_success'] = 'Poisson supprimé.';
     header("Location: index.php");
     exit;
 }

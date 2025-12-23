@@ -12,6 +12,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $pv = floatval($_POST['prix_vente']);
 
     mysqli_query($conn, "UPDATE fish SET nom_fish='$nom', quantite_kg=$quantite, prix_achat=$pa, prix_vente=$pv WHERE id=$id");
+    $_SESSION['flash_success'] = 'Poisson modifié avec succès.';
     header('Location: index.php');
     exit;
 }
@@ -42,6 +43,7 @@ $f = mysqli_fetch_assoc($r);
         <input name="nom_fish" value="<?= htmlspecialchars($f['nom_fish']) ?>" required>
         <label>Quantité (kg)</label>
         <input type="number" step="0.01" name="quantite_kg" value="<?= htmlspecialchars($f['quantite_kg']) ?>" required>
+        <p class="muted">Equivalent: <?= number_format($f['quantite_kg']/10.0,2) ?> dr (10 kg = 1 dr)</p>
         <label>Prix achat / kg</label>
         <input type="number" step="0.01" name="prix_achat" value="<?= htmlspecialchars($f['prix_achat']) ?>" required>
         <label>Prix vente / kg</label>

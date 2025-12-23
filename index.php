@@ -35,6 +35,18 @@ if(!isset($_SESSION['username'])){
 
 <div class="app-container">
 
+<?php
+// Flash messages (set by add_* scripts)
+if(isset($_SESSION['flash_success'])){
+  echo "<div class=\"flash flash-success\">".htmlspecialchars($_SESSION['flash_success'])."</div>";
+  unset($_SESSION['flash_success']);
+}
+if(isset($_SESSION['flash_error'])){
+  echo "<div class=\"flash flash-error\">".htmlspecialchars($_SESSION['flash_error'])."</div>";
+  unset($_SESSION['flash_error']);
+}
+?>
+
 <!-- DASHBOARD -->
 <section class="cards">
   <div class="card" id="card-clients">
@@ -51,16 +63,7 @@ if(!isset($_SESSION['username'])){
   </div>
 </section>
 
-<!-- AJOUT CLIENT -->
-<section class="panel">
-<h2>➕ Ajouter un client</h2>
-<form id="clientForm" action="add_client.php" method="POST">
-  <input name="nom" placeholder="Nom" required>
-  <input name="prenom" placeholder="Prénom" required>
-  <input name="telephone" placeholder="Téléphone" required>
-  <button type="submit">Ajouter</button>
-</form>
-</section>
+<!-- Add client form removed (as requested) -->
 
 <!-- LISTE CLIENTS -->
 <section class="panel">
@@ -98,7 +101,8 @@ while($client = mysqli_fetch_assoc($cl)){
       $fid = (int)$ff['id'];
       echo '<tr>';
       echo '<td>'.htmlspecialchars($ff['nom_fish']).'</td>';
-      echo '<td>'.number_format($ff['quantite_kg'],2).'</td>';
+      $dr = $ff['quantite_kg'] / 10.0;
+      echo '<td>'.number_format($ff['quantite_kg'],2).' kg ('.number_format($dr,2).' dr)</td>';
       echo '<td>'.number_format($ff['prix_vente'],2).' €</td>';
       echo "<td><a href='edit_fish.php?id={$fid}' title='Modifier'>✏️</a> <a href='delete_fish.php?id={$fid}' title='Supprimer'>🗑️</a></td>";
       echo '</tr>';
@@ -144,9 +148,10 @@ if ($fishes) {
   while($f = mysqli_fetch_assoc($fishes)){
     $fid = (int)$f['id'];
     echo '<div class="checkbox-qty fade-in">';
-    echo "<label><input type='checkbox' name='id_fish[]' value='".$fid."'> ".htmlspecialchars($f['nom_fish'])." (".htmlspecialchars($f['quantite_kg'])." kg dispo)</label>";
+    $dr_av = $f['quantite_kg'] / 10.0;
+    echo "<label><input type='checkbox' name='id_fish[]' value='".$fid."'> ".htmlspecialchars($f['nom_fish'])." (".htmlspecialchars(number_format($f['quantite_kg'],2))." kg / ".number_format($dr_av,2)." dr dispo)</label>";
     // quantity keyed by fish id so we can map quantities to selected fish reliably
-    echo "<input type='number' name='quantite[{$fid}]' min='0' step='0.01' placeholder='Qté'>";
+    echo "<input type='number' name='quantite[{$fid}]' min='0' step='0.01' placeholder='Qté (kg) — 10kg = 1dr'>";
     echo '</div>';
   }
 } else {
@@ -195,7 +200,8 @@ $res=mysqli_query($conn,$sql);
 while($row=mysqli_fetch_assoc($res)){
   $reste = isset($row['total'], $row['montant_paye']) ? number_format($row['total'] - $row['montant_paye'], 2) : '0.00';
 
-  $qty = isset($row['quantite']) ? number_format((float)$row['quantite'], 2) : '—';
+  $qty_val = isset($row['quantite']) ? floatval($row['quantite']) : 0.0;
+  $qty = $qty_val > 0 ? number_format($qty_val,2).' kg ('.number_format($qty_val/10.0,2).' dr)' : '—';
   $itemTotal = isset($row['item_total']) ? number_format((float)$row['item_total'], 2) : (isset($row['total']) ? number_format((float)$row['total'], 2) : '0.00');
 
   echo "<tr>
@@ -206,7 +212,11 @@ while($row=mysqli_fetch_assoc($res)){
   <td>".(isset($row['montant_paye']) ? number_format((float)$row['montant_paye'],2) : '0.00')."</td>
   <td>".$reste."</td>
   <td>".htmlspecialchars($row['created_at'])."</td>
-  <td><a href='edit_order.php?id={$row['id']}'>✏️</a> <a href='delete_order.php?id={$row['id']}'>🗑️</a></td>
+  <td>
+    <a href='edit_order.php?id={$row['id']}'>✏️</a>
+    <a href='delete_order.php?id={$row['id']}'>🗑️</a>
+    <a href='invoice_order.php?id={$row['id']}' title='Facture PDF'>🧾</a>
+  </td>
   </tr>";
 }
 ?>

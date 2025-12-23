@@ -93,6 +93,8 @@ mysqli_query($conn, "UPDATE clients
                      WHERE id=$id_client");
 
 /* ========= 7. Redirection vers index ========= */
+// set success flash message and redirect
+$_SESSION['flash_success'] = "Commande #$id_commande créée avec succès.";
 header("Location:index.php");
 exit;
 ?>

@@ -1,4 +1,5 @@
 <?php
+session_start();
 include "db.php";
 
 if(
@@ -53,6 +54,8 @@ if(mysqli_num_rows($check) == 1){
     ");
 }
 
+// flash success and redirect
+$_SESSION['flash_success'] = "Poisson enregistré / mis à jour avec succès.";
 header("Location:index.php");
 exit;
 

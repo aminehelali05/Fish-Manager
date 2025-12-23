@@ -10,6 +10,7 @@ if(!isset($_SESSION['username'])){
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $id = intval($_POST['id']);
     mysqli_query($conn, "DELETE FROM clients WHERE id=$id");
+    $_SESSION['flash_success'] = 'Client supprimé.';
     header("Location: index.php");
     exit;
 }

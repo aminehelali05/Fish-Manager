@@ -24,6 +24,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
         // update client totals
         mysqli_query($conn, "UPDATE clients SET total_achat = total_achat - $total, total_paye = total_paye - $paye WHERE id=$client");
+        $_SESSION['flash_success'] = 'Commande supprimée.';
     }
 
     header("Location: index.php");
