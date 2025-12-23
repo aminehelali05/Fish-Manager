@@ -51,5 +51,9 @@ $c = mysqli_fetch_assoc($r);
     <button>Enregistrer</button>
 </form>
 <a href="index.php">⬅ Retour</a>
+
+    <!-- Inline minimal fallback to trigger page-load animation quickly -->
+    <script>setTimeout(function(){ try{ document.body.classList.add('is-loaded'); }catch(e){} },40);</script>
+    <script src="js_main.js"></script>
 </body>
 </html>

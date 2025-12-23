@@ -31,7 +31,12 @@ $c = mysqli_fetch_assoc($r);
 <head>
 <meta charset="utf-8">
 <title>Supprimer client</title>
-<link rel="stylesheet" href="style.css">
+</head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=20251223">
+</head>
 </head>
 <body>
 <h2>Supprimer client</h2>
@@ -41,5 +46,8 @@ $c = mysqli_fetch_assoc($r);
     <button>Oui, supprimer</button>
 </form>
 <a href="index.php">Annuler</a>
+    <!-- Inline minimal fallback to trigger page-load animation quickly -->
+    <script>setTimeout(function(){ try{ document.body.classList.add('is-loaded'); }catch(e){} },40);</script>
+    <script src="js_main.js"></script>
 </body>
 </html>
