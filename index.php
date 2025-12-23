@@ -77,13 +77,37 @@ while($client = mysqli_fetch_assoc($cl)){
     echo "<td>".htmlspecialchars($client['total_achat'])."</td>";
     echo "<td>".htmlspecialchars($client['total_paye'])."</td>";
     echo "<td>
-            <a href='edit_client.php?id={$id}'>✏️</a>
-            <a href='delete_client.php?id={$id}'>🗑️</a>
+            <a href='edit_client.php?id={$id}' title='Modifier'>✏️</a>
+            <a href='delete_client.php?id={$id}' title='Supprimer'>🗑️</a>
+            <a href='invoice_client.php?client_id={$id}' title='Facture PDF'>🧾</a>
           </td>";
     echo "</tr>";
 }
 ?>
 </table>
+</section>
+
+<!-- LISTE POISSONS (gestion) -->
+<section class="panel mt-4">
+<h2>🐟 Gestion des poissons</h2>
+<?php
+  $fishs = mysqli_query($conn, "SELECT * FROM fish ORDER BY nom_fish");
+  if($fishs && mysqli_num_rows($fishs) > 0){
+    echo '<table><tr><th>Nom</th><th>Quantité (kg)</th><th>Prix vente/kg</th><th>Actions</th></tr>';
+    while($ff = mysqli_fetch_assoc($fishs)){
+      $fid = (int)$ff['id'];
+      echo '<tr>';
+      echo '<td>'.htmlspecialchars($ff['nom_fish']).'</td>';
+      echo '<td>'.number_format($ff['quantite_kg'],2).'</td>';
+      echo '<td>'.number_format($ff['prix_vente'],2).' €</td>';
+      echo "<td><a href='delete_fish.php?id={$fid}' title='Supprimer'>🗑️</a></td>";
+      echo '</tr>';
+    }
+    echo '</table>';
+  } else {
+    echo '<p>Aucun poisson enregistré.</p>';
+  }
+?>
 </section>
 
 <!-- AJOUT / MISE À JOUR POISSON -->
