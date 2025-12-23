@@ -27,7 +27,6 @@ if(!isset($_SESSION['username'])){
     </div>
     <nav class="nav">
       <a href="stats3d.php">📊 Statistiques 3D</a>
-      <a href="comptes.php">💳 Comptes</a>
       <a href="logout.php" class="is-danger">🚪 Déconnexion</a>
     </nav>
   </div>
@@ -64,6 +63,16 @@ if(isset($_SESSION['flash_error'])){
 </section>
 
 <!-- Add client form removed (as requested) -->
+<!-- AJOUT CLIENT (réintégré) -->
+<section class="panel">
+<h2>➕ Ajouter un client</h2>
+<form id="clientForm" action="add_client.php" method="POST">
+  <input name="nom" placeholder="Nom" required>
+  <input name="prenom" placeholder="Prénom" required>
+  <input name="telephone" placeholder="Téléphone" required>
+  <button type="submit">Ajouter</button>
+</form>
+</section>
 
 <!-- LISTE CLIENTS -->
 <section class="panel">
@@ -151,7 +160,7 @@ if ($fishes) {
     $dr_av = $f['quantite_kg'] / 10.0;
     echo "<label><input type='checkbox' name='id_fish[]' value='".$fid."'> ".htmlspecialchars($f['nom_fish'])." (".htmlspecialchars(number_format($f['quantite_kg'],2))." kg / ".number_format($dr_av,2)." dr dispo)</label>";
     // quantity keyed by fish id so we can map quantities to selected fish reliably
-    echo "<input type='number' name='quantite[{$fid}]' min='0' step='0.01' placeholder='Qté (kg) — 10kg = 1dr'>";
+    echo "<div class='qty-line'><input type='number' name='quantite[{$fid}]' min='0' step='0.01' placeholder='Qté'> <select name='unit[{$fid}]'><option value='kg'>kg</option><option value='dr'>dr</option></select></div>";
     echo '</div>';
   }
 } else {

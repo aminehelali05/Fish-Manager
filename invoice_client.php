@@ -23,10 +23,11 @@ function ensurePoppinsFontsClient(){
     if(!$missing) return;
     $cur = getcwd();
     chdir($fontDir);
-    try{ require_once __DIR__.'/fpdf182/makefont/makefont.php';
-        if(file_exists($ttfDir.'/Poppins-Regular.ttf')) MakeFont($ttfDir.'/Poppins-Regular.ttf','cp1252',true,true);
-        if(file_exists($ttfDir.'/Poppins-Bold.ttf')) MakeFont($ttfDir.'/Poppins-Bold.ttf','cp1252',true,true);
-        if(file_exists($ttfDir.'/Poppins-SemiBold.ttf')) MakeFont($ttfDir.'/Poppins-SemiBold.ttf','cp1252',true,true);
+    try{
+        require_once __DIR__.'/fpdf182/makefont/makefont.php';
+        if(file_exists($ttfDir.'/Poppins-Regular.ttf')) try{ MakeFont($ttfDir.'/Poppins-Regular.ttf','cp1252',true,false); }catch(Exception $e){}
+        if(file_exists($ttfDir.'/Poppins-Bold.ttf')) try{ MakeFont($ttfDir.'/Poppins-Bold.ttf','cp1252',true,false); }catch(Exception $e){}
+        if(file_exists($ttfDir.'/Poppins-SemiBold.ttf')) try{ MakeFont($ttfDir.'/Poppins-SemiBold.ttf','cp1252',true,false); }catch(Exception $e){}
     } catch(Exception $e){}
     chdir($cur);
 }

@@ -363,8 +363,10 @@ class TTFParser
 			$this->glyphs[$i]['ssid'] = $i;
 		}*/
 
-		$this->AddGlyph(0);
+		// initialize subset arrays to avoid count() on null (PHP8 strictness)
+		$this->subsettedGlyphs = array();
 		$this->subsettedChars = array();
+		$this->AddGlyph(0);
 		foreach($chars as $char)
 		{
 			if(isset($this->chars[$char]))

@@ -11,6 +11,7 @@ if(!isset($_SESSION['username'])){
 $id_client       = isset($_POST['id_client']) ? intval($_POST['id_client']) : 0;
 $fish_ids        = isset($_POST['id_fish']) && is_array($_POST['id_fish']) ? $_POST['id_fish'] : [];
 $quantites_map   = isset($_POST['quantite']) && is_array($_POST['quantite']) ? $_POST['quantite'] : [];
+$unit_map        = isset($_POST['unit']) && is_array($_POST['unit']) ? $_POST['unit'] : [];
 $type_vente      = isset($_POST['type_vente']) ? mysqli_real_escape_string($conn, $_POST['type_vente']) : '';
 $type_paiement   = isset($_POST['type_paiement']) ? mysqli_real_escape_string($conn, $_POST['type_paiement']) : '';
 $montant_acompte = isset($_POST['montant_acompte']) ? floatval($_POST['montant_acompte']) : 0.0;
@@ -34,6 +35,11 @@ $items_inserted = 0;
 foreach($fish_ids as $id_fish){
     $id_fish = intval($id_fish);
     $qte = isset($quantites_map[$id_fish]) ? floatval($quantites_map[$id_fish]) : 0.0;
+    // support user-entered unit: kg (default) or dr (1 dr = 10 kg)
+    $unit = isset($unit_map[$id_fish]) ? $unit_map[$id_fish] : 'kg';
+    if($unit === 'dr'){
+        $qte = $qte * 10.0; // convert dr to kg
+    }
     if($qte <= 0) continue;
 
     $r = mysqli_query($conn, "SELECT prix_vente, quantite_kg FROM fish WHERE id=$id_fish");
@@ -66,7 +72,8 @@ foreach($fish_ids as $id_fish){
 // If no items were inserted, cleanup the empty commande and abort
 if($items_inserted == 0){
     mysqli_query($conn, "DELETE FROM commandes WHERE id=$id_commande");
-    echo "<script>alert('Aucun article valide dans la commande (quantités insuffisantes ou non sélectionnées).'); window.location='index.php';</script>";
+    $_SESSION['flash_error'] = 'Aucun article valide dans la commande (quantités insuffisantes ou non sélectionnées).';
+    header('Location: index.php');
     exit;
 }
 
