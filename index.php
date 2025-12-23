@@ -45,17 +45,19 @@ table tr:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0
   <a href="comptes.php" style="color:#fff;background:#0f1720;padding:0.5rem 1rem;border-radius:6px;text-decoration:none;margin-left:0.5rem">💳 Comptes</a>
 </div>
 
+<div class="app-container">
+
 <!-- DASHBOARD -->
 <section class="cards">
-  <div class="card">👥 Clients<br><?php $r=mysqli_query($conn,"SELECT COUNT(*) nb FROM clients"); echo mysqli_fetch_assoc($r)['nb']; ?></div>
-  <div class="card">🐠 Types de poissons<br><?php $r=mysqli_query($conn,"SELECT COUNT(*) nb FROM fish"); echo mysqli_fetch_assoc($r)['nb']; ?></div>
-  <div class="card">🧾 Ventes<br><?php $r=mysqli_query($conn,"SELECT COUNT(*) nb FROM commandes"); echo mysqli_fetch_assoc($r)['nb']; ?></div>
+  <div class="card" id="card-clients">👥 Clients<br><span id="clientsCount"><?php $r=mysqli_query($conn,"SELECT COUNT(*) nb FROM clients"); echo mysqli_fetch_assoc($r)['nb']; ?></span></div>
+  <div class="card" id="card-fish">🐠 Types de poissons<br><span id="fishCount"><?php $r=mysqli_query($conn,"SELECT COUNT(*) nb FROM fish"); echo mysqli_fetch_assoc($r)['nb']; ?></span></div>
+  <div class="card" id="card-sales">🧾 Ventes<br><span id="salesCount"><?php $r=mysqli_query($conn,"SELECT COUNT(*) nb FROM commandes"); echo mysqli_fetch_assoc($r)['nb']; ?></span></div>
 </section>
 
 <!-- AJOUT CLIENT -->
 <section class="form-section">
 <h2>➕ Ajouter un client</h2>
-<form action="add_client.php" method="POST">
+<form id="clientForm" action="add_client.php" method="POST">
   <input name="nom" placeholder="Nom" required>
   <input name="prenom" placeholder="Prénom" required>
   <input name="telephone" placeholder="Téléphone" required>
@@ -90,7 +92,7 @@ while($client = mysqli_fetch_assoc($cl)){
 <!-- AJOUT / MISE À JOUR POISSON -->
 <section class="form-section">
 <h2>➕ Achat / Mise à jour poisson</h2>
-<form action="add_fish.php" method="POST">
+<form id="fishForm" action="add_fish.php" method="POST">
   <input type="text" name="nom_fish" placeholder="Nom du poisson" required>
   <input type="number" step="0.01" name="quantite_kg" placeholder="Quantité achetée (kg)" required>
   <input type="number" step="0.01" name="prix_achat" placeholder="Prix d'achat / kg" required>
@@ -103,7 +105,7 @@ while($client = mysqli_fetch_assoc($cl)){
 <!-- NOUVELLE COMMANDE MULTI-POISSONS -->
 <section class="form-section">
 <h2>🧾 Nouvelle commande</h2>
-<form action="add_order.php" method="POST">
+<form id="orderForm" action="add_order.php" method="POST">
 <select name="id_client" required>
 <option value="">-- Choisir client --</option>
 <?php
@@ -119,11 +121,11 @@ while($c=mysqli_fetch_assoc($clients)){
 $fishes = mysqli_query($conn,"SELECT * FROM fish ORDER BY nom_fish");
 if ($fishes) {
   while($f = mysqli_fetch_assoc($fishes)){
-    echo '<div class="checkbox-qty">';
+    echo '<div class="checkbox-qty fade-in">';
     echo "<label><input type='checkbox' name='id_fish[]' value='".htmlspecialchars($f['id'])."'> ".htmlspecialchars($f['nom_fish'])." (".htmlspecialchars($f['quantite_kg'])." kg dispo)</label>";
     echo "<input type='number' name='quantite[]' min='0' step='0.01' placeholder='Qté'>";
     echo '</div>';
-}
+  }
 } else {
   echo '<p>Aucun poisson disponible.</p>';
 }
@@ -185,6 +187,8 @@ while($row=mysqli_fetch_assoc($res)){
 </section>
 
 <a class="btn logout" href="logout.php">🚪 Déconnexion</a>
+
+</div> <!-- .app-container -->
 
 </body>
 </html>
