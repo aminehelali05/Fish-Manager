@@ -40,6 +40,10 @@ table tr:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0
 <body>
 
 <header>🐟 Fish Manager – Tableau de bord</header>
+<div style="text-align:center;margin:0.5rem">
+  <a href="stats3d.php" style="color:#fff;background:#1e88e5;padding:0.5rem 1rem;border-radius:6px;text-decoration:none">📊 Statistiques 3D</a>
+  <a href="comptes.php" style="color:#fff;background:#0f1720;padding:0.5rem 1rem;border-radius:6px;text-decoration:none;margin-left:0.5rem">💳 Comptes</a>
+</div>
 
 <!-- DASHBOARD -->
 <section class="cards">
