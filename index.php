@@ -13,12 +13,14 @@ if(!isset($_SESSION['username'])){
 <meta charset="UTF-8">
 <title>Fish Manager</title>
 <link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 /* ======== STYLE GLOBAL ======== */
-body { font-family: Arial, sans-serif; background-color: #121212; color: #eee; margin: 0; padding: 0; }
+body { font-family: 'Poppins', Arial, sans-serif; background: linear-gradient(180deg,#0f1720 0%, #0b0f14 100%); color: #eee; margin: 0; padding: 0; }
 header { text-align: center; font-size: 2rem; padding: 1rem; background: #1e88e5; color: #fff; text-shadow: 0 0 10px #1e88e5; }
 .cards { display: flex; justify-content: space-around; margin: 1rem; }
-.card { background: #1e1e1e; padding: 1rem; border-radius: 10px; width: 25%; text-align: center; box-shadow: 0 0 10px #1e88e5; }
+.card { background: linear-gradient(180deg,#121212,#1b2330); padding: 1.25rem; border-radius: 12px; width: 25%; text-align: center; box-shadow: 0 10px 30px rgba(30,136,229,0.12); transition: transform 0.35s ease, box-shadow 0.35s ease; transform-origin: center; }
+.card:hover { transform: translateY(-10px) rotateX(6deg); box-shadow: 0 20px 40px rgba(30,136,229,0.22); }
 .form-section { background: #1e1e1e; margin: 1rem; padding: 1rem; border-radius: 10px; box-shadow: 0 0 10px #1e88e5; }
 .form-section h2 { margin-top: 0; }
 .form-section input, .form-section select, .form-section button { display: block; width: 90%; margin: 0.5rem 0; padding: 0.5rem; border-radius: 5px; border: none; }
@@ -30,6 +32,9 @@ th, td { padding: 0.5rem; border: 1px solid #1e88e5; text-align: center; }
 th { background: #1e88e5; color: #fff; }
 .checkbox-qty { display: flex; align-items: center; justify-content: space-between; background: #2c2c2c; padding: 0.5rem; margin: 0.3rem 0; border-radius: 5px; }
 .checkbox-qty input[type="number"] { width: 80px; }
+/* subtle 3D effect for tables */
+table tr { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+table tr:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
 </style>
 </head>
 <body>
