@@ -12,61 +12,55 @@ if(!isset($_SESSION['username'])){
 <head>
 <meta charset="UTF-8">
 <title>Fish Manager</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-<style>
-/* ======== STYLE GLOBAL ======== */
-body { font-family: 'Poppins', Arial, sans-serif; background: linear-gradient(180deg,#0f1720 0%, #0b0f14 100%); color: #eee; margin: 0; padding: 0; }
-header { text-align: center; font-size: 2rem; padding: 1rem; background: #1e88e5; color: #fff; text-shadow: 0 0 10px #1e88e5; }
-.cards { display: flex; justify-content: space-around; margin: 1rem; }
-.card { background: linear-gradient(180deg,#121212,#1b2330); padding: 1.25rem; border-radius: 12px; width: 25%; text-align: center; box-shadow: 0 10px 30px rgba(30,136,229,0.12); transition: transform 0.35s ease, box-shadow 0.35s ease; transform-origin: center; }
-.card:hover { transform: translateY(-10px) rotateX(6deg); box-shadow: 0 20px 40px rgba(30,136,229,0.22); }
-.form-section { background: #1e1e1e; margin: 1rem; padding: 1rem; border-radius: 10px; box-shadow: 0 0 10px #1e88e5; }
-.form-section h2 { margin-top: 0; }
-.form-section input, .form-section select, .form-section button { display: block; width: 90%; margin: 0.5rem 0; padding: 0.5rem; border-radius: 5px; border: none; }
-button { background: #1e88e5; color: #fff; cursor: pointer; transition: 0.3s; }
-button:hover { background: #1565c0; }
-.table-section { margin: 1rem; }
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: 0.5rem; border: 1px solid #1e88e5; text-align: center; }
-th { background: #1e88e5; color: #fff; }
-.checkbox-qty { display: flex; align-items: center; justify-content: space-between; background: #2c2c2c; padding: 0.5rem; margin: 0.3rem 0; border-radius: 5px; }
-.checkbox-qty input[type="number"] { width: 80px; }
-/* subtle 3D effect for tables */
-table tr { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-table tr:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
-</style>
 </head>
 <body>
 
-<header>🐟 Fish Manager – Tableau de bord</header>
-<div style="text-align:center;margin:0.5rem">
-  <a href="stats3d.php" style="color:#fff;background:#1e88e5;padding:0.5rem 1rem;border-radius:6px;text-decoration:none">📊 Statistiques 3D</a>
-  <a href="comptes.php" style="color:#fff;background:#0f1720;padding:0.5rem 1rem;border-radius:6px;text-decoration:none;margin-left:0.5rem">💳 Comptes</a>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-title">🐟 Fish Manager</div>
+    </div>
+    <nav class="nav">
+      <a href="stats3d.php">📊 Statistiques 3D</a>
+      <a href="comptes.php">💳 Comptes</a>
+      <a href="logout.php" class="is-danger">🚪 Déconnexion</a>
+    </nav>
+  </div>
 </div>
 
 <div class="app-container">
 
 <!-- DASHBOARD -->
 <section class="cards">
-  <div class="card" id="card-clients">👥 Clients<br><span id="clientsCount"><?php $r=mysqli_query($conn,"SELECT COUNT(*) nb FROM clients"); echo mysqli_fetch_assoc($r)['nb']; ?></span></div>
-  <div class="card" id="card-fish">🐠 Types de poissons<br><span id="fishCount"><?php $r=mysqli_query($conn,"SELECT COUNT(*) nb FROM fish"); echo mysqli_fetch_assoc($r)['nb']; ?></span></div>
-  <div class="card" id="card-sales">🧾 Ventes<br><span id="salesCount"><?php $r=mysqli_query($conn,"SELECT COUNT(*) nb FROM commandes"); echo mysqli_fetch_assoc($r)['nb']; ?></span></div>
+  <div class="card" id="card-clients">
+    <span class="metric-label">👥 Clients</span>
+    <span class="metric-value" id="clientsCount"><?php $r=mysqli_query($conn,"SELECT COUNT(*) nb FROM clients"); echo mysqli_fetch_assoc($r)['nb']; ?></span>
+  </div>
+  <div class="card" id="card-fish">
+    <span class="metric-label">🐠 Types de poissons</span>
+    <span class="metric-value" id="fishCount"><?php $r=mysqli_query($conn,"SELECT COUNT(*) nb FROM fish"); echo mysqli_fetch_assoc($r)['nb']; ?></span>
+  </div>
+  <div class="card" id="card-sales">
+    <span class="metric-label">🧾 Ventes</span>
+    <span class="metric-value" id="salesCount"><?php $r=mysqli_query($conn,"SELECT COUNT(*) nb FROM commandes"); echo mysqli_fetch_assoc($r)['nb']; ?></span>
+  </div>
 </section>
 
 <!-- AJOUT CLIENT -->
-<section class="form-section">
+<section class="panel">
 <h2>➕ Ajouter un client</h2>
 <form id="clientForm" action="add_client.php" method="POST">
   <input name="nom" placeholder="Nom" required>
   <input name="prenom" placeholder="Prénom" required>
   <input name="telephone" placeholder="Téléphone" required>
-  <button>Ajouter</button>
+  <button type="submit">Ajouter</button>
 </form>
 </section>
 
 <!-- LISTE CLIENTS -->
-<section class="table-section">
+<section class="panel">
 <h2>👥 Clients</h2>
 <table>
 <tr><th>Nom</th><th>Téléphone</th><th>Total Achat</th><th>Total Payé</th><th>Actions</th></tr>
@@ -90,20 +84,20 @@ while($client = mysqli_fetch_assoc($cl)){
 </section>
 
 <!-- AJOUT / MISE À JOUR POISSON -->
-<section class="form-section">
+<section class="panel">
 <h2>➕ Achat / Mise à jour poisson</h2>
 <form id="fishForm" action="add_fish.php" method="POST">
   <input type="text" name="nom_fish" placeholder="Nom du poisson" required>
   <input type="number" step="0.01" name="quantite_kg" placeholder="Quantité achetée (kg)" required>
   <input type="number" step="0.01" name="prix_achat" placeholder="Prix d'achat / kg" required>
   <input type="number" step="0.01" name="prix_vente" placeholder="Prix de vente / kg" required>
-  <button>Valider l'achat</button>
+  <button type="submit">Valider l'achat</button>
 </form>
 <p>ℹ️ Si le poisson existe déjà, la quantité sera ajoutée et le capital recalculé.</p>
 </section>
 
 <!-- NOUVELLE COMMANDE MULTI-POISSONS -->
-<section class="form-section">
+<section class="panel">
 <h2>🧾 Nouvelle commande</h2>
 <form id="orderForm" action="add_order.php" method="POST">
 <select name="id_client" required>
@@ -143,12 +137,12 @@ if ($fishes) {
 
 <input type="number" step="0.01" name="montant_acompte" placeholder="Montant acompte (si applicable)">
 
-<button>Valider la commande</button>
+<button type="submit">Valider la commande</button>
 </form>
 </section>
 
 <!-- HISTORIQUE VENTES -->
-<section class="table-section">
+<section class="panel">
 <h2>📋 Historique des ventes</h2>
 <table>
 <tr>
@@ -186,7 +180,9 @@ while($row=mysqli_fetch_assoc($res)){
 </table>
 </section>
 
-<a class="btn logout" href="logout.php">🚪 Déconnexion</a>
+<div class="center mt-4">
+  <a class="btn btn-danger" href="logout.php">🚪 Déconnexion</a>
+</div>
 
 </div> <!-- .app-container -->
 

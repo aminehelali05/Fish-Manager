@@ -30,54 +30,78 @@ function addItem(){
 }
 
 // UI Animations
-document.addEventListener('DOMContentLoaded', function(){
-    // counters
-    function animateCounter(id){
+(function(){
+    'use strict';
+
+    function onReady(fn){
+        if(document.readyState !== 'loading') fn(); else document.addEventListener('DOMContentLoaded', fn);
+    }
+
+    function animateCounter(id, duration = 800){
         const el = document.getElementById(id);
         if(!el) return;
         const value = parseInt(el.textContent) || 0;
         let start = 0;
-        const duration = 800;
-        const step = (timestamp)=>{
-            start += Math.ceil(value / (duration / 16));
-            if(start >= value) { el.textContent = value; return; }
-            el.textContent = start;
-            requestAnimationFrame(step);
-        };
+        const startTime = performance.now();
+
+        function step(now){
+            const progress = Math.min((now - startTime) / duration, 1);
+            el.textContent = Math.floor(progress * value);
+            if(progress < 1) requestAnimationFrame(step); else el.textContent = value;
+        }
         requestAnimationFrame(step);
     }
-    ['clientsCount','fishCount','salesCount'].forEach(animateCounter);
 
-    // tilt cards
-    document.querySelectorAll('.card').forEach(card=>{
-        card.addEventListener('mousemove', function(e){
-            const rect = card.getBoundingClientRect();
-            const x = (e.clientX - rect.left) / rect.width - 0.5;
-            const y = (e.clientY - rect.top) / rect.height - 0.5;
-            card.style.transform = `translateY(-8px) rotateX(${(-y*8).toFixed(2)}deg) rotateY(${(x*8).toFixed(2)}deg)`;
+    function setupCounters(){
+        ['clientsCount','fishCount','salesCount'].forEach(id=> animateCounter(id));
+    }
+
+    function setupRevealOnScroll(){
+        const io = new IntersectionObserver((entries, obs)=>{
+            entries.forEach(entry => {
+                if(entry.isIntersecting){
+                    entry.target.classList.add('visible');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, {threshold: 0.12});
+
+        // Observe both explicit fade-in helpers and panels for a unified reveal
+        document.querySelectorAll('.fade-in, .panel').forEach(el => io.observe(el));
+    }
+
+    function setupFormValidation(){
+        const cf = document.getElementById('clientForm'); if(cf) cf.addEventListener('submit', (e)=>{ if(!validateClientForm()){ e.preventDefault(); } });
+        const ff = document.getElementById('fishForm'); if(ff) ff.addEventListener('submit', (e)=>{ if(!validateFishForm()){ e.preventDefault(); } });
+        const of = document.getElementById('orderForm'); if(of) of.addEventListener('submit', (e)=>{ /* server will validate */ });
+    }
+
+    function setupRipples(){
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function(e){
+                const rect = btn.getBoundingClientRect();
+                const r = document.createElement('span');
+                r.className = 'ripple';
+                const size = Math.max(rect.width, rect.height) * 1.2;
+                r.style.width = r.style.height = size + 'px';
+                const x = e.clientX - rect.left - size/2;
+                const y = e.clientY - rect.top - size/2;
+                r.style.left = x + 'px'; r.style.top = y + 'px';
+                btn.appendChild(r);
+                setTimeout(()=> r.remove(), 600);
+            });
         });
-        card.addEventListener('mouseleave', ()=>{ card.style.transform = ''; });
+    }
+
+    onReady(function(){
+        // page load visual
+        setTimeout(()=> document.body.classList.add('is-loaded'), 40);
+
+        setupCounters();
+        setupRevealOnScroll();
+        setupFormValidation();
+        setupRipples();
     });
 
-    // reveal on scroll
-    const io = new IntersectionObserver((entries)=>{
-        entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
-    }, {threshold:0.12});
-    document.querySelectorAll('.fade-in').forEach(el=> io.observe(el));
-
-    // attach form validations if present
-    const cf = document.getElementById('clientForm'); if(cf) cf.addEventListener('submit', (e)=>{ if(!validateClientForm()){ e.preventDefault(); } });
-    const ff = document.getElementById('fishForm'); if(ff) ff.addEventListener('submit', (e)=>{ if(!validateFishForm()){ e.preventDefault(); } });
-    const of = document.getElementById('orderForm'); if(of) of.addEventListener('submit', (e)=>{ /* basic check handled by server */ });
-
-    // button ripple
-    document.querySelectorAll('button').forEach(btn=>{
-        btn.addEventListener('click', function(e){
-            const r=document.createElement('span'); r.className='ripple';
-            const size=Math.max(btn.offsetWidth, btn.offsetHeight); r.style.width=r.style.height=size+'px';
-            r.style.left=(e.offsetX - size/2)+'px'; r.style.top=(e.offsetY - size/2)+'px';
-            btn.appendChild(r); setTimeout(()=>r.remove(),700);
-        });
-    });
-});
+})();
 
