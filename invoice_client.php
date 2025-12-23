@@ -52,7 +52,7 @@ if(file_exists(__DIR__.'/fpdf182/font/Poppins-Regular.php')){
 
 $pdf->AddPage();
 $pdf->SetFont($font,'B',16);
-$pdf->Cell(0,10, safeTextClient('Fish Manager - Facture client'),0,1,'C');
+$pdf->Cell(0,10, asciiTextClient('Fish Manager - Facture client'),0,1,'C');
 $pdf->Ln(4);
 
 $pdf->SetFont($font,'',12);
