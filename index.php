@@ -142,9 +142,11 @@ while($c=mysqli_fetch_assoc($clients)){
 $fishes = mysqli_query($conn,"SELECT * FROM fish ORDER BY nom_fish");
 if ($fishes) {
   while($f = mysqli_fetch_assoc($fishes)){
+    $fid = (int)$f['id'];
     echo '<div class="checkbox-qty fade-in">';
-    echo "<label><input type='checkbox' name='id_fish[]' value='".htmlspecialchars($f['id'])."'> ".htmlspecialchars($f['nom_fish'])." (".htmlspecialchars($f['quantite_kg'])." kg dispo)</label>";
-    echo "<input type='number' name='quantite[]' min='0' step='0.01' placeholder='Qté'>";
+    echo "<label><input type='checkbox' name='id_fish[]' value='".$fid."'> ".htmlspecialchars($f['nom_fish'])." (".htmlspecialchars($f['quantite_kg'])." kg dispo)</label>";
+    // quantity keyed by fish id so we can map quantities to selected fish reliably
+    echo "<input type='number' name='quantite[{$fid}]' min='0' step='0.01' placeholder='Qté'>";
     echo '</div>';
   }
 } else {

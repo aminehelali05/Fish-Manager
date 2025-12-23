@@ -7,16 +7,20 @@ if(!isset($_SESSION['username'])){
     exit;
 }
 
-/* ========= 1. Récupérer les données du formulaire ========= */
-$id_client       = $_POST['id_client'];
-$fish_ids        = $_POST['id_fish'];      // array de poissons sélectionnés
-$quantites_input = $_POST['quantite'];     // array de quantités en texte (ex: "2,1.5")
-$type_vente      = $_POST['type_vente'];
-$type_paiement   = $_POST['type_paiement'];
-$montant_acompte = $_POST['montant_acompte'] ?? 0;
+/* ========= 1. Récupérer et valider les données du formulaire ========= */
+$id_client       = isset($_POST['id_client']) ? intval($_POST['id_client']) : 0;
+$fish_ids        = isset($_POST['id_fish']) && is_array($_POST['id_fish']) ? $_POST['id_fish'] : [];
+$quantites_map   = isset($_POST['quantite']) && is_array($_POST['quantite']) ? $_POST['quantite'] : [];
+$type_vente      = isset($_POST['type_vente']) ? mysqli_real_escape_string($conn, $_POST['type_vente']) : '';
+$type_paiement   = isset($_POST['type_paiement']) ? mysqli_real_escape_string($conn, $_POST['type_paiement']) : '';
+$montant_acompte = isset($_POST['montant_acompte']) ? floatval($_POST['montant_acompte']) : 0.0;
 
-// transformer les quantités en array float
-$quantites = array_map('floatval', explode(',', $quantites_input[0]));
+// Basic checks
+if($id_client <= 0){ die("Client invalide"); }
+if(empty($fish_ids) || !is_array($fish_ids)){
+    echo "<script>alert('Aucun poisson sélectionné.'); window.location='index.php';</script>";
+    exit;
+}
 
 /* ========= 2. Créer la commande principale ========= */
 mysqli_query($conn, "INSERT INTO commandes(id_client,type_vente,type_paiement,created_at)
@@ -24,17 +28,26 @@ mysqli_query($conn, "INSERT INTO commandes(id_client,type_vente,type_paiement,cr
 $id_commande = mysqli_insert_id($conn);
 
 $total_commande = 0;
+$items_inserted = 0;
 
 /* ========= 3. Insérer chaque poisson dans commande_items ========= */
-for($i=0; $i<count($fish_ids); $i++){
-    $id_fish = $fish_ids[$i];
-    $qte     = $quantites[$i];
-
+foreach($fish_ids as $id_fish){
+    $id_fish = intval($id_fish);
+    $qte = isset($quantites_map[$id_fish]) ? floatval($quantites_map[$id_fish]) : 0.0;
     if($qte <= 0) continue;
 
-    $fish = mysqli_fetch_assoc(mysqli_query($conn,"SELECT prix_vente, quantite_kg FROM fish WHERE id=$id_fish"));
+    $r = mysqli_query($conn, "SELECT prix_vente, quantite_kg FROM fish WHERE id=$id_fish");
+    if(!$r || mysqli_num_rows($r) == 0) continue;
+    $fish = mysqli_fetch_assoc($r);
 
-    $prix = $fish['prix_vente'];
+    // Prevent over-selling: cap by available stock
+    $available = floatval($fish['quantite_kg']);
+    if($qte > $available){
+        // skip items if not enough stock (or optionally you can set $qte = $available)
+        continue;
+    }
+
+    $prix = floatval($fish['prix_vente']);
     $total_ligne = $qte * $prix;
     $total_commande += $total_ligne;
 
@@ -46,6 +59,15 @@ for($i=0; $i<count($fish_ids); $i++){
     mysqli_query($conn, "UPDATE fish 
                          SET quantite_kg = quantite_kg - $qte
                          WHERE id=$id_fish");
+
+    $items_inserted++;
+}
+
+// If no items were inserted, cleanup the empty commande and abort
+if($items_inserted == 0){
+    mysqli_query($conn, "DELETE FROM commandes WHERE id=$id_commande");
+    echo "<script>alert('Aucun article valide dans la commande (quantités insuffisantes ou non sélectionnées).'); window.location='index.php';</script>";
+    exit;
 }
 
 /* ========= 4. Calculer le montant payé et reste ========= */
