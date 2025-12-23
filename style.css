@@ -59,10 +59,12 @@ body {
   height: 100%;
 }
 
-/* Poppins applied globally */
-* {
-  font-family: "Poppins", sans-serif;
-}
+/* Poppins applied at root for maximum reliability */
+html { font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+* { font-family: inherit; }
+
+/* Ensure form controls inherit Poppins explicitly */
+input, select, button, textarea, table { font-family: inherit; }
 
 body {
   margin: 0;

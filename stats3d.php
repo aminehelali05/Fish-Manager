@@ -19,7 +19,10 @@ while($r = mysqli_fetch_assoc($res)){
 <head>
 <meta charset="utf-8">
 <title>Statistiques 3D</title>
-<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=20251223">
 </head>
 <body>
   <div class="app-container">
