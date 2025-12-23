@@ -84,11 +84,15 @@ while($c=mysqli_fetch_assoc($clients)){
 <h3>Choisir les poissons et quantités :</h3>
 <?php
 $fishes = mysqli_query($conn,"SELECT * FROM fish ORDER BY nom_fish");
-while($f=mysqli_fetch_assoc($f)){
+if ($fishes) {
+  while($f = mysqli_fetch_assoc($fishes)){
     echo '<div class="checkbox-qty">';
-    echo "<label><input type='checkbox' name='id_fish[]' value='{$f['id']}'> {$f['nom_fish']} ({$f['quantite_kg']} kg dispo)</label>";
+    echo "<label><input type='checkbox' name='id_fish[]' value='".htmlspecialchars($f['id'])."'> ".htmlspecialchars($f['nom_fish'])." (".htmlspecialchars($f['quantite_kg'])." kg dispo)</label>";
     echo "<input type='number' name='quantite[]' min='0' step='0.01' placeholder='Qté'>";
     echo '</div>';
+}
+} else {
+  echo '<p>Aucun poisson disponible.</p>';
 }
 ?>
 
