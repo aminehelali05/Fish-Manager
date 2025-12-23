@@ -159,25 +159,29 @@ if ($fishes) {
 <th>Actions</th>
 </tr>
 <?php
-$sql="SELECT o.*, c.nom, c.prenom, f.nom_fish 
-      FROM commandes o
-      JOIN clients c ON o.id_client=c.id
-      JOIN commande_items ci ON ci.id_commande=o.id
-      JOIN fish f ON f.id=ci.id_fish
-      ORDER BY o.created_at DESC";
+$sql="SELECT o.*, c.nom, c.prenom, f.nom_fish, ci.quantite, ci.total AS item_total, ci.id AS item_line_id
+    FROM commandes o
+    JOIN clients c ON o.id_client=c.id
+    JOIN commande_items ci ON ci.id_commande=o.id
+    JOIN fish f ON f.id=ci.id_fish
+    ORDER BY o.created_at DESC";
 $res=mysqli_query($conn,$sql);
 while($row=mysqli_fetch_assoc($res)){
-    $reste = $row['total'] - $row['montant_paye'];
-    echo "<tr>
-    <td>{$row['nom']} {$row['prenom']}</td>
-    <td>{$row['nom_fish']}</td>
-    <td>{$row['quantite']}</td>
-    <td>{$row['total']}</td>
-    <td>{$row['montant_paye']}</td>
-    <td>$reste</td>
-    <td>{$row['created_at']}</td>
-    <td><a href='edit_order.php?id={$row['id']}'>✏️</a> <a href='delete_order.php?id={$row['id']}'>🗑️</a></td>
-    </tr>";
+  $reste = isset($row['total'], $row['montant_paye']) ? number_format($row['total'] - $row['montant_paye'], 2) : '0.00';
+
+  $qty = isset($row['quantite']) ? number_format((float)$row['quantite'], 2) : '—';
+  $itemTotal = isset($row['item_total']) ? number_format((float)$row['item_total'], 2) : (isset($row['total']) ? number_format((float)$row['total'], 2) : '0.00');
+
+  echo "<tr>
+  <td>".htmlspecialchars($row['nom'])." ".htmlspecialchars($row['prenom'])."</td>
+  <td>".htmlspecialchars($row['nom_fish'])."</td>
+  <td>".$qty."</td>
+  <td>".$itemTotal."</td>
+  <td>".(isset($row['montant_paye']) ? number_format((float)$row['montant_paye'],2) : '0.00')."</td>
+  <td>".$reste."</td>
+  <td>".htmlspecialchars($row['created_at'])."</td>
+  <td><a href='edit_order.php?id={$row['id']}'>✏️</a> <a href='delete_order.php?id={$row['id']}'>🗑️</a></td>
+  </tr>";
 }
 ?>
 </table>
