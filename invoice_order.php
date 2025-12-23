@@ -36,10 +36,14 @@ function ensurePoppinsFonts(){
     chdir($cur);
 }
 
-function safeText($s){
-    // convert UTF-8 to CP1252 as FPDF default; fallback to strip unsupported
-    $t = @iconv('UTF-8','CP1252//TRANSLIT',$s);
-    if($t === false) $t = preg_replace('/[\x00-\x1F\x80-\xFF]/','',$s);
+function asciiText($s){
+    // Replace common currency symbols with ASCII label
+    $s = str_replace(['€','€ '], [' DT',' DT '], $s);
+    // transliterate to ASCII and remove any non-printable/non-ascii characters
+    $t = @iconv('UTF-8','ASCII//TRANSLIT',$s);
+    if($t === false) $t = preg_replace('/[^\x20-\x7E]/','',$s);
+    // remove any remaining non-ascii
+    $t = preg_replace('/[^\x20-\x7E]/','',$t);
     return $t;
 }
 
@@ -68,15 +72,15 @@ $pdf->Cell(0,10, safeText('Fish Manager - Facture commande #' . $o['id']), 0, 1,
 $pdf->Ln(4);
 
 $pdf->SetFont($font,'',11);
-$pdf->Cell(0,6, safeText('Client: '.$o['nom'].' '.$o['prenom']), 0,1);
-$pdf->Cell(0,6, safeText('Téléphone: '.$o['telephone']),0,1);
+$pdf->Cell(0,6, asciiText('Client: '.$o['nom'].' '.$o['prenom']), 0,1);
+$pdf->Cell(0,6, asciiText('Telephone: '.$o['telephone']),0,1);
 $pdf->Cell(0,6, safeText('Date: '.$o['created_at']),0,1);
 $pdf->Ln(6);
 
 $pdf->SetFont($font,'B',11);
 $pdf->Cell(80,7,'Poisson',1,0);
-$pdf->Cell(30,7,'Qté (kg)',1,0,'C');
-$pdf->Cell(30,7,'Qté (dr)',1,0,'C');
+$pdf->Cell(30,7,'Qte (kg)',1,0,'C');
+$pdf->Cell(30,7,'Qte (dr)',1,0,'C');
 $pdf->Cell(30,7,'Prix uni',1,0,'C');
 $pdf->Cell(30,7,'Total',1,1,'C');
 
@@ -87,20 +91,20 @@ while($it = mysqli_fetch_assoc($items)){
     $dr = $q / 10.0;
     $prix = floatval($it['prix_vente']);
     $tline = floatval($it['total']);
-    $pdf->Cell(80,7, safeText($it['nom_fish']),1,0);
+    $pdf->Cell(80,7, asciiText($it['nom_fish']),1,0);
     $pdf->Cell(30,7, number_format($q,2),1,0,'C');
     $pdf->Cell(30,7, number_format($dr,2),1,0,'C');
-    $pdf->Cell(30,7, number_format($prix,2).' €',1,0,'C');
-    $pdf->Cell(30,7, number_format($tline,2).' €',1,1,'C');
+    $pdf->Cell(30,7, number_format($prix,2).' DT',1,0,'C');
+    $pdf->Cell(30,7, number_format($tline,2).' DT',1,1,'C');
     $subtotal += $tline;
 }
 
 $pdf->SetFont($font,'B',11);
 $pdf->Cell(170,7,'Sous-total commande',1,0,'R');
-$pdf->Cell(30,7, number_format($subtotal,2).' €',1,1,'C');
+$pdf->Cell(30,7, number_format($subtotal,2).' DT',1,1,'C');
 
 $pdf->Ln(6);
-$pdf->Cell(0,6, safeText('Merci pour votre achat.'),0,1);
+$pdf->Cell(0,6, asciiText('Merci pour votre achat.'),0,1);
 
 $pdf->Output('D', 'facture_commande_'.$o['id'].'.pdf');
 exit;
