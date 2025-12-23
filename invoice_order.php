@@ -68,14 +68,9 @@ if(file_exists(__DIR__.'/fpdf182/font/Poppins-Regular.php')){
 
 $pdf->AddPage();
 $pdf->SetFont($font,'B',14);
-$pdf->Cell(0,10, safeText('Fish Manager - Facture commande #' . $o['id']), 0, 1, 'C');
-$pdf->Ln(4);
-
-$pdf->SetFont($font,'B',14);
 $pdf->Cell(0,10, asciiText('Fish Manager - Facture commande #' . $o['id']), 0, 1, 'C');
-$pdf->Cell(0,6, asciiText('Telephone: '.$o['telephone']),0,1);
-$pdf->Cell(0,6, safeText('Date: '.$o['created_at']),0,1);
-$pdf->Ln(6);
+$pdf->Ln(4);
+$pdf->SetFont($font,'',11);
 $pdf->Cell(0,6, asciiText('Client: '.$o['nom'].' '.$o['prenom']), 0,1);
 $pdf->Cell(0,6, asciiText('Telephone: '.$o['telephone']),0,1);
 $pdf->Cell(0,6, asciiText('Date: '.$o['created_at']),0,1);

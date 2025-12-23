@@ -66,7 +66,7 @@ $orders = mysqli_query($conn, "SELECT * FROM commandes WHERE id_client={$client_
 if($orders && mysqli_num_rows($orders) > 0){
     while($o = mysqli_fetch_assoc($orders)){
         $pdf->SetFont($font,'B',12);
-        $pdf->Cell(0,6, safeTextClient('Commande #'.$o['id'].' - '.$o['created_at']),0,1);
+        $pdf->Cell(0,6, asciiTextClient('Commande #'.$o['id'].' - '.$o['created_at']),0,1);
 
         // table header
         $pdf->SetFont($font,'B',11);
