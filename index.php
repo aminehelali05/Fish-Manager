@@ -54,6 +54,30 @@ th { background: #1e88e5; color: #fff; }
 </form>
 </section>
 
+<!-- LISTE CLIENTS -->
+<section class="table-section">
+<h2>👥 Clients</h2>
+<table>
+<tr><th>Nom</th><th>Téléphone</th><th>Total Achat</th><th>Total Payé</th><th>Actions</th></tr>
+<?php
+$cl = mysqli_query($conn,"SELECT * FROM clients ORDER BY nom");
+while($client = mysqli_fetch_assoc($cl)){
+    $id = (int)$client['id'];
+    echo "<tr>";
+    echo "<td>".htmlspecialchars($client['nom'])." ".htmlspecialchars($client['prenom'])."</td>";
+    echo "<td>".htmlspecialchars($client['telephone'])."</td>";
+    echo "<td>".htmlspecialchars($client['total_achat'])."</td>";
+    echo "<td>".htmlspecialchars($client['total_paye'])."</td>";
+    echo "<td>
+            <a href='edit_client.php?id={$id}'>✏️</a>
+            <a href='delete_client.php?id={$id}'>🗑️</a>
+          </td>";
+    echo "</tr>";
+}
+?>
+</table>
+</section>
+
 <!-- AJOUT / MISE À JOUR POISSON -->
 <section class="form-section">
 <h2>➕ Achat / Mise à jour poisson</h2>
