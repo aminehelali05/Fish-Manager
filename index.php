@@ -148,6 +148,7 @@ if ($fishes) {
 <th>Payé</th>
 <th>Reste</th>
 <th>Date</th>
+<th>Actions</th>
 </tr>
 <?php
 $sql="SELECT o.*, c.nom, c.prenom, f.nom_fish 
@@ -167,6 +168,7 @@ while($row=mysqli_fetch_assoc($res)){
     <td>{$row['montant_paye']}</td>
     <td>$reste</td>
     <td>{$row['created_at']}</td>
+    <td><a href='edit_order.php?id={$row['id']}'>✏️</a> <a href='delete_order.php?id={$row['id']}'>🗑️</a></td>
     </tr>";
 }
 ?>
